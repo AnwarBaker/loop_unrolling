@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define SIZE 1024*1024 // Modify the size as needed 
+
+void normal_unrolling(int *arr) {
+    for (int i = 0; i < SIZE; i++) {
+        arr[i] = arr[i] * 2;
+    }
+}
+
+void unrolling_4(int *arr) {
+    for (int i = 0; i < SIZE; i += 4) {
+        arr[i] = arr[i] * 2;
+        arr[i+1] = arr[i+1] * 2;
+        arr[i+2] = arr[i+2] * 2;
+        arr[i+3] = arr[i+3] * 2;
+    }
+}
+
+void unrolling_8(int *arr) {
+    for (int i = 0; i < SIZE; i += 8) {
+        arr[i] = arr[i] * 2;
+        arr[i+1] = arr[i+1] * 2;
+        arr[i+2] = arr[i+2] * 2;
+        arr[i+3] = arr[i+3] * 2;
+        arr[i+4] = arr[i+4] * 2;
+        arr[i+5] = arr[i+5] * 2;
+        arr[i+6] = arr[i+6] * 2;
+        arr[i+7] = arr[i+7] * 2;
+    }
+}
+
+void unrolling_16(int *arr) {
+    // Using a loop to unroll 16
+    for (int i = 0; i < SIZE; i += 16) {
+        for (int j = 0; j < 16; j++) {
+            arr[i + j] = arr[i + j] * 2;
+        }
+    }
+}
+
+void unrolling_64(int *arr) {
+    // Using a loop to unroll 64
+    for (int i = 0; i < SIZE; i += 64) {
+        for (int j = 0; j < 64; j++) {
+            arr[i + j] = arr[i + j] * 2;
+        }
+    }
+}
+
+int main() {
+    int *arr = (int *)malloc(SIZE * sizeof(int));
+
+    // Initialize the array with values
+    for (int i = 0; i < SIZE; i++) {
+        arr[i] = 1;
+    }
+
+    // Time the normal unrolling
+    clock_t start = clock();
+    normal_unrolling(arr);
+    clock_t end = clock();
+    double normal_time = ((double)(end - start)) / CLOCKS_PER_SEC;
+
+    // Time the 4-way unrolling
+    start = clock();
+    unrolling_4(arr);
+    end = clock();
+    double unrolling_4_time = ((double)(end - start)) / CLOCKS_PER_SEC;
+
+    // Time the 8-way unrolling
+    start = clock();
+    unrolling_8(arr);
+    end = clock();
+    double unrolling_8_time = ((double)(end - start)) / CLOCKS_PER_SEC;
+
+    // Time the 16-way unrolling
+    start = clock();
+    unrolling_16(arr);
+    end = clock();
+    double unrolling_16_time = ((double)(end - start)) / CLOCKS_PER_SEC;
+
+    // Time the 64-way unrolling
+    start = clock();
+    unrolling_64(arr);
+    end = clock();
+    double unrolling_64_time = ((double)(end - start)) / CLOCKS_PER_SEC;
+
+    // Print out the results
+    printf("size = %d\n", SIZE);
+    printf("normal Time: %f\n", normal_time);
+    printf("unrolling_4 Time: %f\n", unrolling_4_time);
+    printf("Speedup (4-way unrolling): %f\n", normal_time / unrolling_4_time);
+    printf("unrolling_8 Time: %f\n", unrolling_8_time);
+    printf("Speedup (8-way unrolling): %f\n", normal_time / unrolling_8_time);
+    printf("unrolling_16 Time: %f\n", unrolling_16_time);
+    printf("Speedup (16-way unrolling): %f\n", normal_time / unrolling_16_time);
+    printf("unrolling_64 Time: %f\n", unrolling_64_time);
+    printf("Speedup (64-way unrolling): %f\n", normal_time / unrolling_64_time);
+
+    free(arr);
+    return 0;
+}
